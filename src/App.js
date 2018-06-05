@@ -47,6 +47,10 @@ class App extends Component {
     return matched;
   }
 
+  applyLimit = (_, i) => {
+    return this.props.limit && i < this.props.limit;
+  }
+
   companySelected = e => {
     this.setState({
       companyFilter : e.currentTarget.value
@@ -60,6 +64,8 @@ class App extends Component {
   }
 
   render() {
+    const filteredUsers = this.state.users.filter(this.applyFilters);
+
     return (
       <div className="App">
         <header className="App-header">
@@ -75,6 +81,7 @@ class App extends Component {
           <input type="text" placeholder="Search" onChange={this.searchFilter} />
         </div>
         <div className="table-container">
+          <p>{ filteredUsers.length } results found</p>
           <table>
             <tr>
               <th>First Name</th>
@@ -82,9 +89,14 @@ class App extends Component {
               <th>Company</th>
             </tr>
 
-            { this.state.users.filter(this.applyFilters).map(( user, i ) => <Row key={i} {...user} /> ) }
+            { filteredUsers
+                .filter(this.applyLimit)
+                .map(( user, i ) => <Row key={i} {...user} /> ) }
 
           </table>
+          {
+            this.props.limit && filteredUsers.length > this.props.limit ? <p>{ filteredUsers.length - this.props.limit } more results...</p> : ''
+          }
         </div>
       </div>
     );

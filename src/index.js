@@ -5,7 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
-  <App numUsers={1000} />, 
+  <App numUsers={1000} limit={50} />, 
   document.getElementById('root')
 );
 registerServiceWorker();
