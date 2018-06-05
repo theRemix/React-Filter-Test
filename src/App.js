@@ -18,7 +18,9 @@ const Row = ({ firstName, lastName, company }) =>
 
 class App extends Component {
   state = {
-    users : []
+    users : [],
+    companyFilter : '',
+    searchFilter : '',
   }
 
   componentDidMount() {
@@ -26,6 +28,35 @@ class App extends Component {
     const users = generateUsers(this.props.numUsers);
     this.setState({ users });
 
+  }
+
+  applyFilters = user => {
+    let matched = true;
+    if( this.state.companyFilter !== '' ){
+      matched = matched && user.company === this.state.companyFilter;
+    }
+    if( this.state.searchFilter !== '' ){
+      matched = matched && 
+        (
+          user.firstName.toLowerCase().indexOf(this.state.searchFilter.toLowerCase()) >= 0 ||
+          user.lastName.toLowerCase().indexOf(this.state.searchFilter.toLowerCase()) >= 0 ||
+          user.company.toLowerCase().indexOf(this.state.searchFilter.toLowerCase()) >= 0
+        );
+    }
+
+    return matched;
+  }
+
+  companySelected = e => {
+    this.setState({
+      companyFilter : e.currentTarget.value
+    })
+  }
+
+  searchFilter = e => {
+    this.setState({
+      searchFilter : e.currentTarget.value
+    })
   }
 
   render() {
@@ -36,12 +67,12 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <div>
-          <select>
-            <option>Select Company</option>
-            { companies.map(c => <option value={c}>{c}</option> ) }
+          <select onChange={this.companySelected}>
+            <option value=''>Select Company</option>
+            { companies.map((c, i) => <option key={i} value={c}>{c}</option> ) }
           </select>
 
-          <input type="text" placeholder="Search" />
+          <input type="text" placeholder="Search" onChange={this.searchFilter} />
         </div>
         <div className="table-container">
           <table>
@@ -51,7 +82,7 @@ class App extends Component {
               <th>Company</th>
             </tr>
 
-            { this.state.users.map(user => <Row {...user} /> ) }
+            { this.state.users.filter(this.applyFilters).map(( user, i ) => <Row key={i} {...user} /> ) }
 
           </table>
         </div>
