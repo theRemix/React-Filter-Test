@@ -83,16 +83,19 @@ class App extends Component {
         <div className="table-container">
           <p>{ filteredUsers.length } results found</p>
           <table>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Company</th>
-            </tr>
+            <tbody>
 
-            { filteredUsers
-                .filter(this.applyLimit)
-                .map(( user, i ) => <Row key={i} {...user} /> ) }
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Company</th>
+              </tr>
 
+              { filteredUsers
+                  .filter(this.applyLimit)
+                  .map(( user, i ) => <Row key={i} {...user} /> ) }
+
+            </tbody>
           </table>
           {
             this.props.limit && filteredUsers.length > this.props.limit ? <p>{ filteredUsers.length - this.props.limit } more results...</p> : ''
